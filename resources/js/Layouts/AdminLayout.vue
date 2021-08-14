@@ -58,7 +58,7 @@ export default {
     methods: {
             init() {
                 let SELECTOR_LOADER = '.preloader'
-                setTimeout(() => {
+                 setTimeout(() => {
                     let $loader = $(SELECTOR_LOADER)
                     if($loader) {
                         $loader.css('height', 0)
