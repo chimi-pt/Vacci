@@ -89,7 +89,9 @@ class RoleController extends Controller
      */
     public function update(Request $request, Role $role)
     {
-        //
+        $role->syncPermissions(collect($request->permisions)->pluck('id')->toArray());
+        $role->update(['name'=>$request->name]);
+        return back();
     }
 
     /**
@@ -100,6 +102,7 @@ class RoleController extends Controller
      */
     public function destroy(Role $role)
     {
-        //
+        $role->delete();
+        return back();
     }
 }
