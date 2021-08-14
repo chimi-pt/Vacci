@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admins;
 
 use App\Http\Controllers\Controller;
+use App\Models\Permission;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -17,6 +18,8 @@ class RoleController extends Controller
     public function index()
     {
         return Inertia::render('Admins/Roles/Index',[
+            'roles'=>Role:: with('permissions')->get(),
+            'permissions'=>Permission::all(),
 
         ]);
     }
