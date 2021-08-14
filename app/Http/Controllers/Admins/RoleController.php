@@ -42,7 +42,20 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request,[
+            'name'=>['required','max:25','unique:roles'],
+            'permissions'=>'required'
+        ]);
+        $role=Role::create([
+            'name'=>$request->name,
+            'guard_name'=>'web',
+
+        ]);
+        if ($request->has('permissions'))
+        {
+            $role->givePermissionsTo(collect($request->permissions)->pluck('id')->toArray());
+        }
+        return back();
     }
 
     /**

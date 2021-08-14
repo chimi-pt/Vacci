@@ -36,6 +36,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum','verified'])-
 
     Route::prefix('roles')->name('roles.')->group(function (){
         Route::get('/',[RoleController::class,'index'])->name('index');
+        Route::post('/',[RoleController::class,'store'])->name('store');
+
     });
 
 });

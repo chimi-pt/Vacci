@@ -19,6 +19,7 @@ createApp({
 })
     .mixin({ methods: { route } })
     .use(InertiaPlugin)
+    .component('multiselect',Multiselect)
     .mount(el);
 
 InertiaProgress.init({ color: '#4B5563' });
