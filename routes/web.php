@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admins\AdminDashboardController;
+use App\Http\Controllers\Admins\UserController;
 use App\Http\Controllers\Admins\PermissionController;
 use App\Http\Controllers\Admins\RoleController;
 use Illuminate\Foundation\Application;
@@ -34,6 +35,17 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
 Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum','verified'])->group(function
 (){
     Route::get('dashboard',[AdminDashboardController::class,'index'])->name('dashboard.index');
+
+
+    Route::prefix('users')->name('users.')->group(function (){
+        Route::get('/',[UserController::class,'index'])->name('index');
+        Route::post('/',[UserController::class,'store'])->name('store');
+        Route::patch('/{users}',[UserController::class,'update'])->name('update');
+        Route::delete('/{users}',[UserController::class,'destroy'])->name('destroy');
+
+
+
+    });
 
     Route::prefix('permissions')->name('permissions.')->group(function (){
         Route::get('/',[PermissionController::class,'index'])->name('index');
