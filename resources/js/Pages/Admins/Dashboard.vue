@@ -61,7 +61,7 @@
 
               <div class="info-box-content">
                 <span class="info-box-text">New Members</span>
-                <span class="info-box-number">2,000</span>
+                <span class="info-box-number">{{users}}</span>
               </div>
               <!-- /.info-box-content -->
             </div>
@@ -797,6 +797,7 @@
 <script>
 import AdminLayout from '../../Layouts/AdminLayout.vue'
 export default{
+  props:['users'],
   components: { AdminLayout }, 
         mounted() {
             this.salesChart()
