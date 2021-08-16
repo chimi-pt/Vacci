@@ -10,17 +10,19 @@ use Inertia\Inertia;
 
 class RoleController extends Controller
 {
+    public function __construct() {
+        $this->middleware(['role:super-admin|admin|moderator']);
+    }
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        return Inertia::render('Admins/Roles/Index',[
-            'roles'=>Role:: with('permissions')->paginate(5),
-            'permissions'=>Permission::all(),
-
+    public function index() {
+        return Inertia::render('Admins/Roles/Index', [
+            'roles' => Role::with('permissions')->paginate(5),
+            'permissions' => Permission::all(),
         ]);
     }
 
@@ -40,20 +42,20 @@ class RoleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        $this->validate($request,[
-            'name'=>['required','max:25','unique:roles'],
-            'permissions'=>'required'
-        ]);
-        $role=Role::create([
-            'name'=>$request->name,
-            'guard_name'=>'web',
-
-        ]);
-        if ($request->has('permissions'))
-        {
-            $role->givePermissionsTo(collect($request->permissions)->pluck('id')->toArray());
+    public function store(Request $request) {
+        if (auth()->user()->hasAnyRole(['super-admin', 'admin'])) {
+            $this->validate($request, [
+                'name' => ['required', 'max:25', 'unique:roles'],
+                'permissions' => 'required'
+            ]);
+            $role = Role::create([
+                'name' => $request->name,
+                'guard_name' => 'web',
+            ]);
+            if ($request->has('permissions')) {
+                $role->givePermissionTo(collect($request->permissions)->pluck('id')->toArray());
+            }
+            return back();
         }
         return back();
     }
@@ -87,18 +89,19 @@ class RoleController extends Controller
      * @param  \App\Models\Role  $role
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Role $role)
-    {
-        $this->validate($request,[
-            'name'=>['required','max:25'],
-            'permissions'=>'required'
-        ]);
-        if ($request->has('permissions'))
-        {
-            $role->givePermissionsTo(collect($request->permissions)->pluck('id')->toArray());
+    public function update(Request $request, Role $role) {
+        if (auth()->user()->hasAnyRole(['super-admin', 'admin'])) {
+            $this->validate($request, [
+                'name' => ['required', 'max:25'],
+                'permissions' => 'required'
+            ]);
+            if ($request->has('permissions')) {
+                $role->givePermissionTo(collect($request->permissions)->pluck('id')->toArray());
+            }
+            $role->syncPermissions(collect($request->permissions)->pluck('id')->toArray());
+            $role->update(['name' => $request->name]);
+            return back();
         }
-        $role->syncPermissions(collect($request->permisions)->pluck('id')->toArray());
-        $role->update(['name'=>$request->name]);
         return back();
     }
 
@@ -108,9 +111,11 @@ class RoleController extends Controller
      * @param  \App\Models\Role  $role
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Role $role)
-    {
-        $role->delete();
+    public function destroy(Role $role) {
+        if (auth()->user()->hasAnyRole(['super-admin', 'admin'])) {
+            $role->delete();
+            return back();
+        }
         return back();
     }
 }

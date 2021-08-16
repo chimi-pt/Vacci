@@ -44,7 +44,7 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
-      
+        if (auth()->user()->hasAnyRole(['super-admin', 'admin'])) {
             $this->validate($request, [
                 'name' => ['required', 'max:50'],
                 'email' => ['required', 'string', 'email', 'max:50', 'unique:users'],
@@ -58,7 +58,8 @@ class UserController extends Controller
             $role = Role::where('id', 5)->first();
             $user->syncRoles($role);
             return back();
-        
+        }
+        return back();
     }
 
     /**
@@ -91,7 +92,7 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, User $user) {
-        
+        if (auth()->user()->hasAnyRole(['super-admin', 'admin'])) {
             $this->validate($request, [
                 'name' => ['required', 'max:50'],
                 'email' => ['required', 'string', 'email', 'max:50'],
@@ -110,7 +111,8 @@ class UserController extends Controller
                 return back();
             }
             return back();
-        
+        }
+        return back();
     }
 
     /**
@@ -120,8 +122,10 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy(User $user) {
-       
+        if (auth()->user()->hasAnyRole(['super-admin', 'admin'])) {
             $user->delete();
             return back();
+        }
+        return back();
     }
 }

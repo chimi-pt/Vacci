@@ -78,7 +78,7 @@ class AdminController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, User $user) {
-        
+        if (auth()->user()->hasAnyRole(['super-admin', 'admin'])) {
             if (!$request->roles) {
                 return back()->withErrors(['roles' => 'The role field is required']);
             }
@@ -94,15 +94,10 @@ class AdminController extends Controller
             }
             return back();
         }
-       
+        return back();
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
-     */
+    
     public function destroy(User $user)
     {
         //

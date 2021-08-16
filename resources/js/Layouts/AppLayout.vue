@@ -15,8 +15,8 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <!-- Left Side Of Navbar -->
           <ul class="navbar-nav mr-auto">
-            <jet-nav-link :href="route('dashboard')" :active="route().current('dashboard')">
-              Dashboard
+            <jet-nav-link :href="route('admin.dashboard.index')" :active="route().current('dashboard')">
+              VacciDash
             </jet-nav-link>
           </ul>
 
